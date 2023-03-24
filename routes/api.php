@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+function translate ($word) {
+    if (strlen($word) <= 2) {
+        return $word;
+    }
+
+    return substr($word, 1) . '-' . substr($word, 0, 1) . 'erb';
+}
+
+Route::get('/{text}', function ($text) {
+    $words = explode(' ', $text);
+    $words = array_map('translate', $words);
+    $words = implode(' ', $words);
+
+    return response()->json([
+        'original' => $text,
+        'translation' => $words,
+    ]);
 });
